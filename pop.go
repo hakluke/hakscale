@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os/exec"
 	"strconv"
@@ -70,6 +71,6 @@ func shellexec(command string, verbose bool) {
 // writeToQueueAndPrint will print the command output and then write it to the redis queue
 func writeToQueueAndPrint(ctx context.Context, command string, queue string, output []byte) {
 	log.Println("Output for command:", command)
-	log.Println(string(output))      // print command output
+	fmt.Println(string(output))      // print command output
 	redisClient.LPush(queue, output) // push the command output to the queue
 }
