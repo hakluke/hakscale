@@ -34,12 +34,12 @@ func doWork(wg *sync.WaitGroup, queue string, verbose bool) {
 			}
 			time.Sleep(1 * time.Second)
 		} else {
-			shellexec(result)
+			shellexec(result, verbose)
 		}
 	}
 }
 
-func shellexec(command string) {
+func shellexec(command string, verbose bool) {
 	ctx := context.Background()
 	split := strings.Split(command, ":::_:::")
 	queue := split[0] // this is a randomly generated uuid to be used as a queue name for returning the output
@@ -51,7 +51,9 @@ func shellexec(command string) {
 	}
 	command = split[2]
 
-	log.Println("Running command:", command)
+	if verbose {
+		log.Println("Running command:", command)
+	}
 
 	commandctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(timeout)) // add context to include a timeout
 	defer cancel()                                                                                      // The cancel should be deferred so resources are cleaned up
@@ -67,6 +69,7 @@ func shellexec(command string) {
 
 // writeToQueueAndPrint will print the command output and then write it to the redis queue
 func writeToQueueAndPrint(ctx context.Context, command string, queue string, output []byte) {
+	log.Println("Output for command:", command)
 	log.Println(string(output))      // print command output
 	redisClient.LPush(queue, output) // push the command output to the queue
 }
