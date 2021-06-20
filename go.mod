@@ -1,4 +1,4 @@
-module github.com/hakluke/haktools/cmd/hakscale
+module github.com/hakluke/hakscale
 
 go 1.15
 
