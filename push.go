@@ -75,7 +75,7 @@ func printResults(queueID string, wg *sync.WaitGroup, verbose bool) {
 			}
 			time.Sleep(1 * time.Second)
 		case err != nil: // there was an actual error trying to grab the data
-			fmt.Println("Redis error:", err)
+			log.Println("Redis error:", err)
 		case result == "": // the command returned no output, don't bother printing a blank line
 			wg.Done()
 		default: // we got output, print it!
