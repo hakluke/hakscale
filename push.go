@@ -69,7 +69,7 @@ func printResults(queueID string, wg *sync.WaitGroup, verbose bool) {
 		result, err := redisClient.RPop(queueID).Result()
 
 		switch {
-		case err == redis.Nil: // the queue doesn't exist, there's no output to print yet
+		case err == redisClient.Nil: // the queue doesn't exist, there's no output to print yet
 			if verbose {
 				log.Println("Awaiting output:", err)
 			}
