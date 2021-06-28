@@ -26,6 +26,12 @@ var redisClient *redis.Client
 
 func main() {
 
+	// if less than 2 arguments, error out
+	if len(os.Args) < 2 {
+		fmt.Println("Error: Subcommand missing or incorrect.\n\nHint: you can push jobs to the queue with:\n\nhakscale push -p \"param1:./file1.txt,param2:./file2.txt\" -c \"nmap -A _param1_ _param2_\" -t 20\n\nOr you can pop them from the queue and execute them with:\n\nhakscale pop -q nmap -t 20")
+		return
+	}
+
 	// load config file
 	f, err := os.Open(os.Getenv("HOME") + "/.config/haktools/hakscale-config.yml")
 	if err != nil {
@@ -54,11 +60,6 @@ func main() {
 	if err != nil {
 		fmt.Println("Unable to connect to specified Redis server:", err)
 		os.Exit(1)
-	}
-
-	if len(os.Args) < 2 {
-		fmt.Println("Error: Subcommand missing or incorrect.\n\nHint: you can push jobs to the queue with:\n\nhakscale push -p \"param1:./file1.txt,param2:./file2.txt\" -c \"nmap -A _param1_ _param2_\" -t 20\n\nOr you can pop them from the queue and execute them with:\n\nhakscale pop -q nmap -t 20")
-		return
 	}
 
 	switch os.Args[1] {

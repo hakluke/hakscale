@@ -19,15 +19,18 @@ func pushIt(command string, queue string, parametersString string, test bool, ti
 	var filenames []string
 	var placeholders []string
 
+	// split the parameters input into a slice of placeholder:filename pairs
 	parameters := strings.Split(parametersString, ",")
+
+	// separate the placeholder from the filename and store them in two slices for processing
 	for _, p := range parameters {
 		split = strings.Split(p, ":")
 		placeholders = append(placeholders, split[0])
 		filenames = append(filenames, split[1])
 	}
 
+	// get a slice of lines for each filename
 	var fileSlices [][]string
-
 	for _, filename := range filenames {
 		newFileLines, err := readLines(filename)
 		if err != nil {
@@ -36,6 +39,7 @@ func pushIt(command string, queue string, parametersString string, test bool, ti
 		fileSlices = append(fileSlices, newFileLines)
 	}
 
+	// for each file, figure out how many lines there are. Store lengths of each file in a slice called lengths, and do the same for originalLengths
 	var lengths []int
 	var originalLengths []int
 
@@ -47,6 +51,7 @@ func pushIt(command string, queue string, parametersString string, test bool, ti
 
 	var wg sync.WaitGroup
 
+	// create a rendom queue name for sending back data
 	queueID := uuid.New().String()
 
 	// get the results back and print them
@@ -64,11 +69,12 @@ func printResults(queueID string, wg *sync.WaitGroup, verbose bool) {
 		result, err := redisClient.RPop(queueID).Result()
 		if err != nil {
 			if verbose {
-				log.Println("Awaiting output.")
+				log.Println("Awaiting output:", err)
 			}
 			time.Sleep(1 * time.Second)
 		} else {
 			fmt.Println(result)
+			//TODO log.Println("Completed", doneCount, "/", totalCount, "jobs")
 			wg.Done()
 		}
 	}
