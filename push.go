@@ -67,14 +67,19 @@ func pushIt(command string, queue string, parametersString string, test bool, ti
 func printResults(queueID string, wg *sync.WaitGroup, verbose bool) {
 	for {
 		result, err := redisClient.RPop(queueID).Result()
-		if err != nil {
+
+		switch {
+		case err == redis.Nil: // the queue doesn't exist, there's no output to print yet
 			if verbose {
 				log.Println("Awaiting output:", err)
 			}
 			time.Sleep(1 * time.Second)
-		} else {
+		case err != nil: // there was an actual error trying to grab the data
+			fmt.Println("Redis error:", err)
+		case result == "": // the command returned no output, don't bother printing a blank line
+			wg.Done()
+		default: // we got output, print it!
 			fmt.Println(result)
-			//TODO log.Println("Completed", doneCount, "/", totalCount, "jobs")
 			wg.Done()
 		}
 	}
@@ -109,12 +114,12 @@ func loopThrough(fileSlices [][]string, placeholders []string, command string, l
 	}
 
 	// if -test is specified, just print the commands, otherwise push them to redis
-	wg.Add(1)
 	if test {
 		fmt.Println(line)
 	} else {
 		// using :::_::: as a separator between the queueID, timeout and command
 		redisClient.LPush(queue, queueID+":::_:::"+strconv.Itoa(timeout)+":::_:::"+line)
+		wg.Add(1)
 	}
 
 	for i := range lengths {
