@@ -58,7 +58,7 @@ If multiple variables are specified, every unique combination of those variables
 
 There are two subcommands, `push` and `pop`.
 
-The "push" mode is how you get commands ONTO the stack, and the "pop" mode is how you get commands OFF the stack and execute them. You use "push" on the master server, and "pop" on the workers.
+The "push" mode is how you get commands ONTO the queue, and the "pop" mode is how you get commands OFF the queue and execute them. You use "push" on the master server, and "pop" on the workers.
 
 ## Push options
 
