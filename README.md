@@ -22,6 +22,12 @@ It's a very simple way to distribute scans/commands across many systems. It's pe
 
 # Setup
 
+To install the binary on your machine:
+
+```
+go install github.com/hakluke/hakscale@latest
+```
+
 The basic requirements are:
 
 - A computer to push commands
