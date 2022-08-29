@@ -1,6 +1,6 @@
 # What is this?
 
-Hakscale allows you to scale out shell commands over multiple systems with multiple threads on each system. The key concept is that a master server will _push_ commands to the queue, then multiple worker servers _pop_ commands from the queue and execute them.
+Hakscale allows you to scale out shell commands over multiple systems with multiple threads on each system. The key concept is that a master server will _push_ commands to the queue, then multiple worker servers _pop_ commands from the queue and execute them. The output from those commands will then be sent back to the master server.
 
 For example, if you want to run a tool like httpx against 1 million hosts in `hosts.txt`, you could run:
 
@@ -8,13 +8,13 @@ For example, if you want to run a tool like httpx against 1 million hosts in `ho
 hakscale push -p "host:./hosts.txt" -c "echo _host_ | httpx" -t 20
 ```
 
-This would create 1 million commands and send them to a queue. Then, you can set up as many servers (workers) as you like to pull those commands off the queue and execute them. To do this, you can simply run the following command:
+This would create 1 million commands and send them to a queue. Then, you can set up as many servers (workers) as you like to pull those commands off the queue and execute them in parallel. To do this, you can simply run the following command:
 
 ```
 hakscale pop -t 20
 ```
 
-Once the command is complete, the output is sent back to the master server that pushed the commands in the first place.
+Once the command is complete, the output is sent back to the master server. It feels like you are running a command and viewing output as normal, but the actual work will be distributed over many other machines, so it is much faster.
 
 # What can it be used for?
 
