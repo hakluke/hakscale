@@ -1,6 +1,6 @@
 # What is this?
 
-Hakscale allows you to scale out commands over multiple systems with multiple threads on each system. The key concept is that a master server will _push_ commands to the queue, then multiple worker servers _pop_ commands from the queue and execute them.
+Hakscale allows you to scale out shell commands over multiple systems with multiple threads on each system. The key concept is that a master server will _push_ commands to the queue, then multiple worker servers _pop_ commands from the queue and execute them.
 
 For example, if you want to run a tool like httpx against 1 million hosts in `hosts.txt`, you could run:
 
@@ -18,14 +18,14 @@ Once the command is complete, the output is sent back to the master server that 
 
 # What can it be used for?
 
-It's a very simple way to distribute scans/commands across virtually infinite systems. It's perfect for large-scale internet scanning because it is _way_ faster than attempting to do it from a single host, there are probably also a bunch of other uses that I can't think of right now.
+It's a very simple way to distribute scans/commands across many systems. It's perfect for large-scale internet scanning because it is _way_ faster than attempting to do it from a single host. There are probably also a bunch of other uses that I can't think of right now.
 
 # Setup
 
 The basic requirements are:
 
 - A computer to push commands
-- 1 or more workers computers (usually multiple VPSs)
+- 1 or more worker computers (usually multiple VPSs)
 - A Redis server
 
 You can set it up however you want, but if you would like to use Digital Ocean:
