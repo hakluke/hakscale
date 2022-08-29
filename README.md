@@ -20,6 +20,61 @@ Once the command is complete, the output is sent back to the master server. It f
 
 It's a very simple way to distribute scans/commands across many systems. It's perfect for large-scale internet scanning because it is _way_ faster than attempting to do it from a single host. There are probably also a bunch of other uses that I can't think of right now.
 
+# How do I use it?
+
+When you're pushing commands to the queue - hakscale will automatically generate the commands based on input from a file. For example, if you wanted to ping a list of hosts, you could use this:
+
+```
+hakscale push -p "host:./hosts.txt" -c "ping _host_" -t 20
+```
+
+In the command above, the `-p` option specifies a variable name "host", and then a file to take the variables from (hosts.txt). In the `-c` option, the position of the variable in the command is defined with an underscore on either side: `_hosts_`. Hakscale will automatically generate the commands based on this input. For example, if the hosts file contained the following:
+
+```
+google.com
+bing.com
+hakluke.com
+haksec.io
+```
+
+Then the commands generated would be:
+
+```
+ping google.com
+ping bing.com
+ping hakluke.com
+ping haksec.io
+```
+
+You can also specify multiple variables, for example:
+
+```
+hakscale push -p "param1:./file1.txt,param2:./file2.txt" -c "nmap -A _param1_ _param2_" -t 20
+```
+
+If multiple variables are specified, every unique combination of those variables is generated.
+
+# Options
+
+There are two subcommands, `push` and `pop`.
+
+The "push" mode is how you get commands ONTO the stack, and the "pop" mode is how you get commands OFF the stack and execute them. You use "push" on the master server, and "pop" on the workers.
+
+## Push options
+
+- `-v` verbose mode
+- `-c` the command you wish to scale, including placeholders
+- `-q` the name of the queue that you would like to push jobs to
+- `-p` define parameters (variables, as described above)
+- `-test` test mode - print the commands to the terminal but don't actually push them to redis
+- `-t` timeout, set a timeout for the commands (in seconds)
+
+## Pop options
+
+- `-v` verbose mode
+- `-q` name of the queue that you would like to get the jobs from
+- `-t` the number of threads that you'd like to use
+
 # Setup
 
 To install the binary on your machine:
